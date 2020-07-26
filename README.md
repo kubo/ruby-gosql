@@ -72,14 +72,23 @@ Disclaimer: The followings may be incorrect. I'm a newbie about Go.
 
 ### How `gosql.go` and `gosql.c` are combined into a C shared library
 
+When C functions are called from Go and Go functions are called from C,
+
 * Put C function prototypes of C functions used from Go into `gosql.h`.
   The header file is included by both `gosql.go` and `gosql.c`.
-* Implement `gosql.go` and build it as a C-archive file.
-  The key point is `#cgo LDFLAGS: -Wl,-unresolved-symbols=ignore-all`. See [go#25832 comment][].
-  `libgosql.h` is created along with `libgosql.a`. The header file
-  includes C function prototypes of functions exported from Go.
+* Implement `gosql.go` and build it as a C-archive file by `go build -buildmode=c-archive`.
+  * The key point is `#cgo LDFLAGS: -Wl,-unresolved-symbols=ignore-all`. (See [go#25832 comment][])
+  * `libgosql.h` is created along with `libgosql.a`.
+  * The header file includes C function prototypes of functions exported from Go.
 * Implement `gosql.c`, which includes `libgosql.h` to use Go functions.
 * Link `libgosql.a` and `gosql.c` into `gosql.so`.
+
+The above steps are complicated in order to use C prototypes of Go functions.
+
+When your code doesn't call Go functions from C or use manually created C
+prototypes of Go functions, it is simple. Just include `gosql.c` in a
+Go file and use `go build -buildmode=c-shared`. Note that the Go file
+including `gosql.c` must not have `//export`.
 
 ### How Go objects are protected from Go's GC
 
@@ -90,6 +99,11 @@ Disclaimer: The followings may be incorrect. I'm a newbie about Go.
 * A ruby object hold a key of the map. The key is removed from
   the map when the ruby object is freed by ruby's GC. After that
   the value is freed by Go's GC.
+
+
+### License
+
+BSD 2-clause License
 
 [`database/sql`]: https://golang.org/pkg/database/sql/
 [SQL database drivers]: https://github.com/golang/go/wiki/SQLDrivers
