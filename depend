@@ -1,0 +1,4 @@
+libgosql.a libgosql.h: gosql.go gosql-drivers.go gosql.h ruby.pc
+	PKG_CONFIG_PATH=. go build -buildmode=c-archive -o libgosql.a gosql.go gosql-drivers.go
+
+gosql.o: gosql.c gosql.h libgosql.h ruby.pc

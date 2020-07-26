@@ -1,0 +1,10 @@
+*~
+/Makefile
+/go.sum
+/gosql-drivers.go
+/gosql.o
+/gosql.so
+/libgosql.a
+/libgosql.h
+/ruby.pc
+
