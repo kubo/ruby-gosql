@@ -74,6 +74,9 @@ Disclaimer: The followings may be incorrect. I'm a newbie about Go.
 
 When C functions are called from Go and Go functions are called from C,
 
+(Note: The following steps are complex more than needs. Just including
+`_cgo_export.h` in `gosql.c` makes things simple.)
+
 * Put C function prototypes of C functions used from Go into `gosql.h`.
   The header file is included by both `gosql.go` and `gosql.c`.
 * Implement `gosql.go` and build it as a C-archive file by `go build -buildmode=c-archive`.
